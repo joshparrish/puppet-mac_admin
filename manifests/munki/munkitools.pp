@@ -4,7 +4,7 @@ class mac_admin::munki::munkitools {
         package { 'munki_tools2':
             ensure   => installed,
             provider => pkgdmg,
-            source   => 'https://github.com/munki/munki/releases/download/v2.4.0/munkitools-2.4.0.2561.pkg',
+            source   => 'https://github.com/munki/munki/releases/download/v2.7.1/munkitools-2.7.1.2764.pkg',
         }
 
         ##If we need to, touch the bootstrap file
