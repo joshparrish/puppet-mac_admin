@@ -1,65 +1,24 @@
-# == Class: mac_admin::munki
-#
-# Installs Munki and installs a configuration profile with Munki settings
-#
-# === Parameters
-#
-# [*repourl*]
-#   The URL of your Munki repo. Defaults to http://munki
-#
-# [*clientidentifier*]
-#   The Mac's clientidentifier. Defaults to the Mac's serial number
-#
-# [*suppressautoinstall*]
-#   Suppress auto installation of packages. Defaults to false
-#
-# [*suppress_stop*]
-#   Suppress the stop button during installation. Defaults to true
-#
-# [*install_apple_updates*]
-#   Allows Munki to install Apple Software Updates Defaults to false
-#
-# [*bootstrap*]
-#   Touch /Users/Shared/.com.googlecode.munki.checkandinstallatstartup when the Munki package is changed. Defaults to false
-#
-# === Examples
-#
-#  class { 'mac_admin::munki':
-#    repourl                     => "http://munki.example.com",
-#    suppressstopbuttononinstall => true,
-#    bootstrap                   => true,
-#    clientidentifier            => "demo_client",
-#  }
-#
-
-class mac_admin::munki(
-    $repourl = $mac_admin::params::repourl,
-    $clientidentifier = $mac_admin::params::clientidentifier,
-    $suppressautoinstall = $mac_admin::params::suppressautoinstall,
-    $suppress_stop = $mac_admin::params::suppress_stop,
-    $bootstrap = $mac_admin::params::bootstrap,
-    $install_apple_updates = $mac_admin::params::install_apple_updates,
-    $packageurl = $mac_admin::params::packageurl,
-    $catalogurl = $mac_admin::params::catalogurl,
-    $manifesturl = $mac_admin::params::manifesturl,
-    $additionalhttpheaders = $mac_admin::params::additionalhttpheaders,
-    $unattendedappleupdates = false,
-    ) inherits mac_admin::params {
-
-    ## Install the latest Munki
-    include mac_admin::munki::munkitools
-
-    if ! defined(File["${::puppet_vardir}/mac_admin"]) {
-        file { "${::puppet_vardir}/mac_admin":
-            ensure => directory,
-        }
-    }
+class profile::munki {
+    $repourl					          = "http://munki.cfaserv.astate.edu/"
+    $clientidentifier			      = hiera('profile::munki::clientidentifier')
+    $suppressautoinstall		    = hiera('profile::munki::suppressautoinstall')
+    $suppress_stop				      = hiera('profile::munki::suppress_stop')
+    $bootstrap					        = hiera('profile::munki::bootstrap')
+  	$suppressusernotification 	= hiera('profile::munki::suppressusernotification')
+    $install_apple_updates		  = hiera('profile::munki::install_apple_updates')
+    $packageurl					        = ''
+    $catalogurl					        = ''
+	  $manifesturl				        = ''
+    $additionalhttpheaders		  = ''
+    $unattendedappleupdates		  = false
+    $suppressloginwindowinstall = true
 
     ##Install the profile
-    mac_profiles_handler::manage { 'com.grahamgilbert.munkiprefs':
+   	mac_profiles_handler::manage { 'edu.astate.munkiprefs':
         ensure      => present,
-        file_source => template('mac_admin/com.grahamgilbert.munkiprefs.erb'),
+        file_source => template('profile/edu.astate.munkiprefs.erb'),
         type        => 'template'
     }
-
 }
+
+
